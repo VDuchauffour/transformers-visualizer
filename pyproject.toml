@@ -1,0 +1,51 @@
+[tool.poetry]
+name = "transformers-visualizer"
+version = "0.1.0"
+description = "Seamlessly display the internal behavior of your 🤗 transformers."
+authors = ["VDuchauffour <vincent.duchauffour@proton.me>"]
+readme = "README.md"
+packages = [{include = "transformers_visualizer"}]
+
+[tool.poetry.dependencies]
+python = ">=3.8,<4.0"
+
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^5.0.4"
+pylint = "^2.15.5"
+bandit = "^1.7.4"
+black = "^22.10.0"
+isort = "^5.10.1"
+mypy = "^0.982"
+pre-commit = "^2.20.0"
+pydocstyle = "^6.1.1"
+interrogate = "^1.5.0"
+pytest = "^7.2.0"
+ipython = "^8.6.0"
+
+[tool.black]
+preview = true
+
+[tool.isort]
+profile = "black"
+filter_files = true
+
+[tool.interrogate]
+fail-under = 80
+ignore-module = true
+ignore-nested-functions = true
+ignore-private = true
+exclude = ["tests"]
+
+[tool.pydocstyle]
+ignore = "D100,D202,D203,D205,D212,D407,D413,D401,D415,D400,D200,D406"
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.bandit]
+exclude_dirs = ["tests"]
+skips = ["B101"]
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
