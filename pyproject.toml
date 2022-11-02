@@ -1,20 +1,42 @@
 [tool.poetry]
 name = "transformers-visualizer"
 version = "0.1.0"
+license = "Apache-2.0"
 description = "Seamlessly display the internal behavior of your 🤗 transformers."
 authors = ["VDuchauffour <vincent.duchauffour@proton.me>"]
 readme = "README.md"
-packages = [{include = "transformers_visualizer"}]
-
+packages = [{ include = "transformers_visualizer" }]
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
+captum = "^0.5.0"
+transformers = "^4.24.0"
+matplotlib = "^3.6.1"
+keywords = [
+    "machine learning",
+    "natural language processing",
+    "nlp",
+    "explainability",
+    "transformers",
+    "model interpretability",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Topic :: Documentation :: Sphinx",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Text Processing :: Linguistic",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+]
 
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^5.0.4"
 pylint = "^2.15.5"
 bandit = "^1.7.4"
-black = "^22.10.0"
+black = { version = "^22.10.0", allow-prereleases = true }
 isort = "^5.10.1"
 mypy = "^0.982"
 pre-commit = "^2.20.0"
