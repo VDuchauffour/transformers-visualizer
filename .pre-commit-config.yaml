@@ -1,0 +1,33 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+      - id: check-merge-conflict
+      - id: debug-statements
+  - repo: https://github.com/psf/black
+    rev: 22.3.0
+    hooks:
+      - id: black
+        args:
+          - --preview
+  - repo: https://github.com/pycqa/isort
+    rev: 5.6.4
+    hooks:
+      - id: isort
+        args: ["--profile", "black", "--filter-files"]
+  - repo: https://github.com/econchick/interrogate
+    rev: 1.5.0
+    hooks:
+      - id: interrogate
+        args: [--fail-under=80, -M, -n, -P, --exclude, tests]
+        pass_filenames: false
+  - repo: https://github.com/pycqa/pydocstyle
+    rev: 4.0.0
+    hooks:
+      - id: pydocstyle
+        args:
+          [
+            "--ignore=D100,D202,D203,D205,D212,D407,D413,D401,D415,D400,D200,D406",
+          ]
+        exclude: tests
+
