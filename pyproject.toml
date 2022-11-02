@@ -5,12 +5,8 @@ license = "Apache-2.0"
 description = "Seamlessly display the internal behavior of your 🤗 transformers."
 authors = ["VDuchauffour <vincent.duchauffour@proton.me>"]
 readme = "README.md"
+repository = "https://github.com/VDuchauffour/transformers-visualizer"
 packages = [{ include = "transformers_visualizer" }]
-[tool.poetry.dependencies]
-python = ">=3.8,<4.0"
-captum = "^0.5.0"
-transformers = "^4.24.0"
-matplotlib = "^3.6.1"
 keywords = [
     "machine learning",
     "natural language processing",
@@ -30,6 +26,13 @@ classifiers = [
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
 ]
+
+
+[tool.poetry.dependencies]
+python = ">=3.8,<4.0"
+captum = "^0.5.0"
+transformers = "^4.24.0"
+matplotlib = "^3.6.1"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -68,6 +71,7 @@ ignore_missing_imports = true
 [tool.bandit]
 exclude_dirs = ["tests"]
 skips = ["B101"]
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
