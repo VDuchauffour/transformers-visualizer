@@ -9,7 +9,12 @@ setup(
     url="https://github.com/VDuchauffour/transformers-visualizer",
     license="Apache-2.0",
     packages=["transformers_visualizer"],
-    install_requires=["captum>=0.5.0", "transformers>=4.24.0", "matplotlib>=3.6.1"],
+    install_requires=[
+        "captum>=0.5.0",
+        "transformers>=4.0.0",
+        "matplotlib>=3.5",
+        "torchtyping>=0.1.4",
+    ],
     keywords=[
         "machine learning",
         "natural language processing",
