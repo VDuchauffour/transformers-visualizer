@@ -2,19 +2,40 @@ from setuptools import setup
 
 setup(
     name="transformers-visualizer",
-    version="0.1.0",
-    description="Seamlessly display the internal behavior of your 🤗 transformers.",
+    version="0.2.0",
+    description=(
+        "Explain your 🤗 transformers without effort! Plot the internal behavior of"
+        " your model."
+    ),
     author="Vincent Duchauffour",
     author_email="vincent.duchauffour@proton.me",
     url="https://github.com/VDuchauffour/transformers-visualizer",
     license="Apache-2.0",
-    packages=["transformers_visualizer"],
+    packages=["transformers_visualizer", "transformers_visualizer.visualizers"],
     install_requires=[
         "captum>=0.5.0",
         "transformers>=4.0.0",
         "matplotlib>=3.5",
         "torchtyping>=0.1.4",
     ],
+    extras_require={
+        "dev": [
+            "flake8",
+            "bandit",
+            "black",
+            "isort",
+            "mypy",
+            "pre-commit",
+            "pydocstyle",
+            "interrogate",
+            "pytest",
+            "ipython",
+            "ipykernel",
+            "ipywidgets",
+            "nb-black",
+            "fire",
+        ]
+    },
     keywords=[
         "machine learning",
         "natural language processing",

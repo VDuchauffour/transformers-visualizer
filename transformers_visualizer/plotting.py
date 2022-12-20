@@ -1,242 +1,135 @@
+from enum import Enum
+from typing import List, Optional, Tuple
+
 import matplotlib.pyplot as plt
+from torchtyping import TensorType
 
-# TODO: add arg for model size
-# TODO: implements differents backend for plotting (plotly etc.)
+sequence_input, num_head = None, None
 
 
-def plot_token_to_token(matrices, tokens, label, **kwargs):
+class SubplotColumnsConfig(Enum):
     """
-    Generates a token-to-token matplotlib plot. The purpose of kwargs are used to setup matplotlib parameter.
+    Number of subplot columns given plot type.
+    """
+
+    TOKEN_TO_TOKEN = 3
+    TOKEN_TO_HEAD = 2
+
+
+class SubplotConfig:
+    """
+    Subplot config given plot type.
+    """
+
+    def __init__(self, length_dimension: int, plot_type: SubplotColumnsConfig):
+        """
+        Instantiate a subplot config. Set `n_cols` and `n_rows` given the type of plot.
+
+        Args:
+            length_dimension (int): length of the dimension to plot.
+            plot_type (SubplotColumnsConfig): plot type.
+        """
+        self.plot_type = plot_type.name
+        self.n_cols = plot_type.value
+        self.n_rows = max(1, length_dimension // self.n_cols)
+
+
+def plot_token_to_token(
+    matrice: TensorType["sequence_input", "sequence_input"],
+    tokens: List[str],
+    dimension_type: str,
+    num_dimension: int,
+    ax: Optional[plt.Axes] = None,
+    ticks_fontsize: int = 7,
+    title_fontsize: int = 9,
+    cmap: str = "viridis",
+    colorbar: bool = True,
+) -> plt.Axes:
+    """
+    Generates a token-to-token matplotlib plot. A `torch.Tensor` is expected as input.
 
     Args:
-        matrices (_type_): _description_
-        tokens (_type_): _description_
-        label (_type_): _description_
+        matrice (torch.Tensor): `torch.Tensor` to plot. Expect tensor of dimension `"sequence_input", "sequence_input"`.
+        tokens (List[str]): List of tokens to plot on x and y ticks label.
+        dimension_type (str): Dimension name to plot.
+        num_dimension (int): Dimension number plotted in title.
+        figsize (Tuple[int, int], optional): Figsize of the plot. Defaults to (20, 20).
+        ticks_fontsize (int, optional): Ticks fontsize. Defaults to 7.
+        title_fontsize (int, optional): Title fontsize. Defaults to 9.
+        cmap (str, optional): Colormap. Defaults to "viridis".
+        colorbar (bool, optional): Display colorbars. Defaults to True.
 
     Returns:
-        _type_: _description_
+        plt.Axes: The generated axes.
     """
-    fig = plt.figure(figsize=kwargs.get("figsize", (20, 20)))
-    fontdict = kwargs.get("fontdict", {"fontsize": 7})
+    if ax is None:
+        ax = plt.gca()
+    assert ax is not None
 
+    im = ax.imshow(matrice.detach().cpu().numpy(), cmap=cmap)
+
+    ax.set_xticks(range(len(tokens)))
+    ax.set_yticks(range(len(tokens)))
+    ax.set_xticklabels(tokens, fontdict={"fontsize": ticks_fontsize}, rotation=90)
+    ax.set_yticklabels(tokens, fontdict={"fontsize": ticks_fontsize})
+    ax.set_title(
+        f"{dimension_type} {num_dimension}",
+        fontdict={"fontsize": title_fontsize},
+    )
+    if colorbar:
+        plt.colorbar(im, ax=ax, fraction=0.15, pad=0.05)
+    return ax
+
+
+def plot_token_to_token_specific_dimension(
+    matrices: TensorType[..., "sequence_input", "sequence_input"],
+    tokens: List[str],
+    dimension_name: str,
+    figsize: Tuple[int, int] = (20, 20),
+    ticks_fontsize: int = 7,
+    title_fontsize: int = 9,
+    cmap: str = "viridis",
+    colorbar: bool = True,
+):
+    """
+    Generates a token-to-token matplotlib plot for all indices of a specific dimension. A `torch.Tensor` is expected as input.
+
+    Args:
+        matrices (torch.Tensor): `torch.Tensor` to plot. Expect tensor of dimension `"...", "sequence_input", "sequence_input"`.
+        tokens (List[str]): List of tokens to plot on x and y ticks label.
+        dimension_name (str): Dimension name to plot.
+        figsize (Tuple[int, int], optional): Figsize of the plot. Defaults to (20, 20).
+        ticks_fontsize (int, optional): Ticks fontsize. Defaults to 7.
+        title_fontsize (int, optional): Title fontsize. Defaults to 9.
+        cmap (str, optional): Colormap. Defaults to "viridis".
+        colorbar (bool, optional): Display colorbars. Defaults to True.
+
+    Returns:
+        matplotlib.figure.Figure: The generated matplotlib figure.
+    """
+    length_dimension = matrices.size(0)
+    subplot_config = SubplotConfig(
+        length_dimension, SubplotColumnsConfig.TOKEN_TO_TOKEN
+    )
+
+    fig = plt.figure(figsize=figsize)
     for idx, matrice in enumerate(matrices):
-        ax = fig.add_subplot(4, 3, idx + 1)
-        im = ax.imshow(matrice, cmap=kwargs.get("cmap", "viridis"))
-
-        ax.set_xticks(range(len(tokens)))
-        ax.set_yticks(range(len(tokens)))
-        ax.set_xticklabels(
-            tokens, fontdict=fontdict, rotation=kwargs.get("rotation", 90)
+        ax = fig.add_subplot(
+            subplot_config.n_rows,
+            subplot_config.n_cols,
+            idx + 1,
         )
-        ax.set_yticklabels(tokens, fontdict=fontdict)
-        ax.set_title(
-            f"{label} {idx + 1}",
-            fontsize=fontdict["fontsize"] + 2,
+        ax = plot_token_to_token(
+            matrice,
+            tokens,
+            dimension_name,
+            idx + 1,
+            ax,
+            ticks_fontsize,
+            title_fontsize,
+            cmap,
+            colorbar,
         )
-        fig.colorbar(im, fraction=0.046, pad=0.04)
 
     plt.tight_layout()
     return plt.gcf()
-
-
-def plot_token_to_head(matrices, tokens):
-    """
-    Generates a token-to-head matplotlib plot.
-
-    Args:
-        matrices (_type_): _description_
-        tokens (_type_): _description_
-
-    Returns:
-        _type_: _description_
-    """
-    fig = plt.figure(figsize=(15, 15))
-
-    for idx, matrice in enumerate(matrices):
-        ax = fig.add_subplot(6, 2, idx + 1)
-        im = ax.matshow(matrice, cmap="viridis")
-
-        fontdict = {"fontsize": 8}
-
-        ax.set_xticks(range(len(tokens)))
-        ax.set_yticks(range(len(matrice)))
-        ax.set_xticklabels(tokens, fontdict=fontdict, rotation=90)
-        ax.set_yticklabels(range(len(matrice)), fontdict=fontdict)
-        ax.set_xlabel(f"Layer {idx + 1}")
-        fig.colorbar(im, fraction=0.046, pad=0.04)
-
-    # plt.tight_layout()
-    return plt.gcf()
-
-
-# def visualize_attention_matrices(
-#     device, model, description, tokenizer, layer, preprocessing_func=None
-# ):
-#     """
-#     Vizualize attention matrices given a model, a tokenizer a layer and a description
-#     """
-
-#     if preprocessing_func is not None:
-#         description = preprocessing_func(description)
-#     all_tokens = tokenizer.convert_ids_to_tokens(tokenizer(description)["input_ids"])
-#     batch = tokenizer(
-#         description,
-#         truncation=True,
-#         padding=True,
-#         max_length=512,
-#         return_attention_mask=True,
-#         return_tensors="pt",
-#     )
-#     attentions = model(
-#         batch["input_ids"].to(device),
-#         batch["attention_mask"].to(device),
-#     ).attentions
-#     output_attentions_all = torch.stack(attentions)
-#     _visualize_token2token_scores(
-#         output_attentions_all[layer].squeeze().detach().cpu().numpy(),
-#         all_tokens,
-#         "Head",
-#     )
-
-
-# def visualize_head_norm_matrices(
-#     device, model, description, tokenizer, preprocessing_func=None
-# ):
-#     """
-#     Vizualize L2 norm across head axis for all layers given a model, a tokenizer and a description
-#     """
-
-#     if preprocessing_func is not None:
-#         description = preprocessing_func(description)
-#     all_tokens = tokenizer.convert_ids_to_tokens(tokenizer(description)["input_ids"])
-#     batch = tokenizer.encode_plus(
-#         description,
-#         truncation=True,
-#         padding=True,
-#         max_length=512,
-#         return_attention_mask=True,
-#         return_tensors="pt",
-#     )
-#     attentions = model(
-#         batch["input_ids"].to(device),
-#         batch["attention_mask"].to(device),
-#     ).attentions
-#     output_attentions_all = torch.stack(attentions)
-#     _visualize_token2token_scores(
-#         torch.norm(output_attentions_all, dim=2).squeeze().detach().cpu().numpy(),
-#         all_tokens,
-#         "Layer",
-#     )
-
-
-# def _forward(inputs, model, ids, device):
-#     pred = model(
-#         ids["input_ids"].to(device),
-#         ids["attention_mask"].to(device))
-#     return pred.logits.max(1).values
-
-
-# def visualize_vector_norm(
-#     device, model, description, tokenizer, preprocessing_func=None, compute="norm", layer=None
-# ):
-#     if preprocessing_func is not None:
-#         description = preprocessing_func(description)
-#     all_tokens = tokenizer.convert_ids_to_tokens(tokenizer(description)["input_ids"])
-#     ids = tokenizer.encode_plus(
-#         description,
-#         truncation=True,
-#         padding=True,
-#         max_length=512,
-#         return_attention_mask=True,
-#         return_tensors="pt",
-#     )
-#     output = model(
-#         ids["input_ids"].to(device),
-#         ids["attention_mask"].to(device),
-#     )
-#     attentions = output.attentions
-#     output_attentions_all = torch.stack(attentions)
-
-#     output_attentions_all_shape = output_attentions_all.shape
-#     batch = output_attentions_all_shape[1]
-#     num_heads = output_attentions_all_shape[2]
-#     head_size = 64
-#     all_head_size = 768
-
-#     layers = [
-#         model.base_model.encoder.layer[layer].attention.self.value
-#         for layer in range(len(model.base_model.encoder.layer))
-#     ]
-
-#     input_embeddings = output.hidden_states[0]
-
-#     la = captum.attr.LayerActivation(_forward, layers)
-#     value_layer_acts = la.attribute(input_embeddings, additional_forward_args=(
-#         model,
-#         ids,
-#         device
-#     ))
-#     # shape -> layer x batch x seq_len x all_head_size
-#     value_layer_acts = torch.stack(value_layer_acts)
-
-#     new_x_shape = value_layer_acts.size()[:-1] + (num_heads, head_size)
-#     value_layer_acts = value_layer_acts.view(*new_x_shape)
-
-#     # layer x batch x neum_heads x 1 x head_size
-#     value_layer_acts = value_layer_acts.permute(0, 1, 3, 2, 4)
-
-#     value_layer_acts = value_layer_acts.permute(0, 1, 3, 2, 4).contiguous()
-#     value_layer_acts_shape = value_layer_acts.size()
-
-#     # layer x batch x seq_length x num_heads x 1 x head_size
-#     value_layer_acts = value_layer_acts.view(value_layer_acts_shape[:-1] + (1, value_layer_acts_shape[-1],))
-
-#     dense_acts = torch.stack([dlayer.attention.output.dense.weight for dlayer in model.base_model.encoder.layer])
-#     dense_acts = dense_acts.view(len(layers), all_head_size, num_heads, head_size)
-
-#     # layer x num_heads x head_size x all_head_size
-#     dense_acts = dense_acts.permute(0, 2, 3, 1).contiguous()
-
-#     # layers, batch, seq_length, num_heads, 1, all_head_size
-#     f_x = torch.stack([value_layer_acts_i.matmul(dense_acts_i) for value_layer_acts_i, dense_acts_i in zip(value_layer_acts, dense_acts)])
-
-#     # layer x batch x seq_length x num_heads x 1 x all_head_size)
-#     f_x_shape = f_x.size()
-#     f_x = f_x.view(f_x_shape[:-2] + (f_x_shape[-1],))
-#     f_x = f_x.permute(0, 1, 3, 2, 4).contiguous()
-
-#     #(layers x batch, num_heads, seq_length, all_head_size)
-#     f_x_shape = f_x.size()
-
-
-#     # ||f(x)||
-#     #(layers x batch, num_heads, seq_length)
-#     f_x_norm = torch.linalg.norm(f_x, dim=-1)
-#     if compute == "norm":
-#         _visualize_token2head_scores(f_x_norm.squeeze().detach().cpu().numpy(), all_tokens)
-
-
-#     # ||alpha * f(x)||
-#     # layer x batch x num_heads x seq_length x seq_length x all_head_size
-#     alpha_f_x = torch.einsum('lbhks,lbhsd->lbhksd', output_attentions_all, f_x)
-
-#     # layer x batch x num_heads x seq_length x seq_length
-#     alpha_f_x_norm = torch.linalg.norm(alpha_f_x, dim=-1)
-#     if compute == "alpha-norm":
-#         _visualize_token2token_scores(
-#             alpha_f_x_norm[layer].squeeze().detach().cpu().numpy(),
-#             all_tokens,
-#             "Head"
-#         )
-
-#     # || SUM alpha * f(x)||
-#     summed_alpha_f_x = alpha_f_x.sum(dim=2)
-
-#     # layers x batch x seq_length x seq_length
-#     summed_alpha_f_x_norm = torch.linalg.norm(summed_alpha_f_x, dim=-1)
-#     if compute == "sum-norm":
-#         _visualize_token2token_scores(
-#             summed_alpha_f_x_norm.squeeze().cpu().detach().numpy(),
-#             all_tokens,
-#             "Layer"
-#         )
