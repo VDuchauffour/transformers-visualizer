@@ -53,7 +53,7 @@ plt.savefig("token_to_token.jpg")
 ```
 
 <p align="center">
-    <img alt="token to token" src="images/token_to_token.jpg" />
+    <img alt="token to token" src="https://raw.githubusercontent.com/VDuchauffour/transformers-visualizer/main/images/token_to_token.jpg" />
 </p>
 
 <p align="center">Plot attention matrices normalized on head axis</p>
@@ -68,7 +68,7 @@ visualizer.compute(text).plot()
 ```
 
 <p align="center">
-    <img alt="normalized token to token"src="images/token_to_token_normalized.jpg" />
+    <img alt="normalized token to token"src="https://raw.githubusercontent.com/VDuchauffour/transformers-visualizer/main/images/token_to_token_normalized.jpg" />
 </p>
 
 </details>
