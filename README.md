@@ -4,17 +4,20 @@
 
 <p align="center">
     <a href="https://opensource.org/licenses/Apache-2.0">
-        <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/>
+        <img alt="Apache" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg">
+    </a>
+    <a href="https://github.com/VDuchauffour/transformers-visualizer">
+        <img alt="PyPI" src="https://img.shields.io/pypi/v/transformers-visualizer?label=version">
     </a>
 </p>
 
-Transformers visualizer is a python package designed to work with 🤗 [transformers](https://huggingface.co/docs/transformers/index) package. Given a <code>model</code> and a <code>tokenizer</code>, this package supports multiple ways to explain your model by plotting its internal behavior.
+Transformers visualizer is a python package designed to work with the [🤗 transformers](https://huggingface.co/docs/transformers/index) package. Given a `model` and a `tokenizer`, this package supports multiple ways to explain your model by plotting its internal behavior.
 
 This package is mostly based on the [Captum][Captum] tutorials [[1]][captum_part1] [[2]][Captum_part2].
 
 ## Installation
 
-```python
+```shell
 pip install transformers-visualizer
 ```
 
@@ -31,8 +34,11 @@ tokenizer = AutoTokenizer.from_pretrained(model_name)
 text = "The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder."
 ```
 
-<details><summary>Attention matrices</summary>
-<p align="center">Plot attention matrices of a specific layer</p>
+### Visualizers
+
+<details><summary>Attention matrices of a specific layer</summary>
+
+<p>
 
 ```python
 from transformers_visualizer import TokenToTokenAttentions
@@ -56,7 +62,13 @@ plt.savefig("token_to_token.jpg")
     <img alt="token to token" src="https://raw.githubusercontent.com/VDuchauffour/transformers-visualizer/main/images/token_to_token.jpg" />
 </p>
 
-<p align="center">Plot attention matrices normalized on head axis</p>
+</p>
+
+</details>
+
+<details><summary>Attention matrices normalized across head axis</summary>
+
+<p>
 
 You can specify the `order` used in `torch.linalg.norm` in `__call__` and `compute` methods. By default, it's a L2 norm.
 
@@ -71,6 +83,8 @@ visualizer.compute(text).plot()
     <img alt="normalized token to token"src="https://raw.githubusercontent.com/VDuchauffour/transformers-visualizer/main/images/token_to_token_normalized.jpg" />
 </p>
 
+</p>
+
 </details>
 
 ## Upcoming features
@@ -83,7 +97,6 @@ visualizer.compute(text).plot()
 
 - [[1]][captum_part1] Captum's BERT example part 1
 - [[2]][captum_part2] Captum's BERT example part 2
-
 
 ## Acknowledgements
 
