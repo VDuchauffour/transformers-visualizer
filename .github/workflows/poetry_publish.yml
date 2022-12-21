@@ -9,7 +9,10 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: action/checkout@v3
+      - name: Checkout code
+        uses: action/checkout@v3
+        with:
+          ref: main
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
