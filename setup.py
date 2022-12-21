@@ -1,8 +1,10 @@
 from setuptools import setup
 
+from transformers_visualizer import __version__
+
 setup(
     name="transformers-visualizer",
-    version="0.2.0",
+    version=__version__,
     description=(
         "Explain your 🤗 transformers without effort! Plot the internal behavior of"
         " your model."
