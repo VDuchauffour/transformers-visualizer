@@ -20,7 +20,7 @@ class TokenToTokenAttentions(Visualizer):
         device: Optional[Union[torch.device, str]] = None,
     ) -> None:
         """
-        Create a token-to-token attention matrices visualizer. Plot attention matrices given a model and a tokenizer.
+        Create a token-to-token attention matrices visualizer. Plot attention matrices of a specific layer index given a model and a tokenizer.
 
         Args:
             model (PreTrainedModel): A `model` given by HuggingFace ecosystem.
@@ -124,7 +124,7 @@ class TokenToTokenNormalizedAttentions(Visualizer):
         device: Optional[Union[torch.device, str]] = None,
     ):
         """
-        Create a token-to-token normalized attention matrices visualizer. Plot normalized attention matrices across head axis given a model and a tokenizer.
+        Create a token-to-token normalized attention matrices visualizer. Plot attention matrices normalized across head axis given a model and a tokenizer.
 
         Args:
             model (PreTrainedModel): A `model` given by HuggingFace ecosystem.
