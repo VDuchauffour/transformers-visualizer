@@ -3,7 +3,7 @@ name: Python versions
 on: push
 
 jobs:
-  publish:
+  versions:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -16,8 +16,15 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install Poetry
-        run: curl -sL https://install.python-poetry.org | python - -y
+        uses: snok/install-poetry@v1
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
       - name: Install requirements
-        run: poetry install
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
       - name: Run visualizers
         run: poetry run python -m tests.run
