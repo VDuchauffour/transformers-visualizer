@@ -6,19 +6,29 @@ from transformers_visualizer import (
     TokenToTokenAttentions,
     TokenToTokenNormalizedAttentions,
 )
+from transformers_visualizer.visualizer import Visualizer
+
+VISUALIZERS = [TokenToTokenAttentions, TokenToTokenNormalizedAttentions]
+MODEL_NAME = "bert-base-uncased"
+MODEL = AutoModel.from_pretrained(MODEL_NAME)
+TOKENIZER = AutoTokenizer.from_pretrained(MODEL_NAME)
 
 
-@pytest.mark.parametrize(
-    "visualizer", [TokenToTokenAttentions, TokenToTokenNormalizedAttentions]
-)
+@pytest.mark.parametrize("visualizer", VISUALIZERS)
 def test_device(visualizer):
-    model_name = "bert-base-uncased"
-    model = AutoModel.from_pretrained(model_name).to("cpu")
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    v = visualizer(model, tokenizer)
+    v = visualizer(MODEL, TOKENIZER)
 
+    v.set_device("cpu")
     assert v.device == torch.device("cpu")
 
     if torch.cuda.is_available():
         v.set_device("cuda")
         assert v.device == torch.device("cuda")
+
+
+@pytest.mark.parametrize("visualizer", VISUALIZERS)
+def test_text_input(visualizer):
+    v = visualizer(MODEL, TOKENIZER)
+    with pytest.raises(NotImplementedError):
+        for input in ["test", ["test"], {"test"}]:
+            v.compute(input)
