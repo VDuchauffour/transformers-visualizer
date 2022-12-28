@@ -16,7 +16,7 @@ ROOTDIR = (
 )
 
 
-def run_visualizers(model_name: str = "bert-base-uncased"):
+def run_visualizers(model_name: str = "bert-base-uncased", plot: bool = False):
     model = AutoModel.from_pretrained(model_name)
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     text = (
@@ -33,7 +33,8 @@ def run_visualizers(model_name: str = "bert-base-uncased"):
         visualizer = visualizer_class(model, tokenizer)
         visualizer.compute(text)
         visualizer.plot()
-        plt.savefig(f"{ROOTDIR}/images/{filename}.jpg")
+        if plot:
+            plt.savefig(f"{ROOTDIR}/images/{filename}.jpg")
 
 
 if __name__ == "__main__":
