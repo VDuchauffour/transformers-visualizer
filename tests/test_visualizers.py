@@ -16,8 +16,9 @@ def test_device(visualizer):
     model = AutoModel.from_pretrained(model_name).to("cpu")
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     v = visualizer(model, tokenizer)
+
     assert v.device == torch.device("cpu")
-    v.set_device("cuda")
-    assert v.device == torch.device("cuda")
-    v.device = "cpu"
-    assert v.device == torch.device("cpu")
+
+    if torch.cuda.is_available():
+        v.set_device("cuda")
+        assert v.device == torch.device("cuda")
