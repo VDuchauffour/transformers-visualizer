@@ -3,7 +3,11 @@ from typing import List, Optional, Set, Tuple, Union
 import torch
 from transformers import PreTrainedModel, PreTrainedTokenizer, PreTrainedTokenizerFast
 
-from transformers_visualizer.errors import DimensionIndicesError, OutputNotComputedEror
+from transformers_visualizer.errors import (
+    DimensionIndicesError,
+    OutputNotComputedEror,
+    TextInputError,
+)
 from transformers_visualizer.plotting import plot_token_to_token_specific_dimension
 from transformers_visualizer.visualizer import Visualizer
 
@@ -49,8 +53,8 @@ class TokenToTokenAttentions(Visualizer):
         Args:
             text (str): Text input.
         """
-        if isinstance(text, Union[List, Tuple, Set]):  # type: ignore
-            raise NotImplementedError("Multiple text input is not supported.")
+        if isinstance(text, Tuple) or isinstance(text, List) or isinstance(text, Set):  # type: ignore
+            raise TextInputError
 
         self.tokens = self.tokenizer(text, return_tensors="pt").to(self._device)
 
@@ -168,8 +172,8 @@ class TokenToTokenNormalizedAttentions(Visualizer):
             text (str): Text input.
             order (Optional[Union[str, int]]): Order used when `torch.norm` is applied.
         """
-        if isinstance(text, Union[List, Tuple, Set]):  # type: ignore
-            raise NotImplementedError("Multiple text input is not supported.")
+        if isinstance(text, Tuple) or isinstance(text, List) or isinstance(text, Set):  # type: ignore
+            raise TextInputError
 
         self.tokens = self.tokenizer(text, return_tensors="pt").to(self._device)
 
