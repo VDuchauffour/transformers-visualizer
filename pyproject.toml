@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "transformers-visualizer"
-version = "0.2.1"
+version = "0.2.2"
 license = "Apache-2.0"
 description = "Explain your 🤗 transformers without effort! Display the internal behavior of your model."
 authors = ["VDuchauffour <vincent.duchauffour@proton.me>"]
