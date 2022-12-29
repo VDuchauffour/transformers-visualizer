@@ -34,7 +34,7 @@ classifiers = [
 
 
 [tool.poetry.dependencies]
-python = ">=3.8,<4.0"
+python = ">=3.7,<4.0"
 captum = ">=0.5.0"
 transformers = ">=4.0.0"
 matplotlib = ">=3.5"
@@ -51,9 +51,9 @@ pre-commit = ">=2.20.0"
 pydocstyle = ">=6.1.1"
 interrogate = ">=1.5.0"
 pytest = ">=7.2.0"
-ipython = ">=8.6.0"
-ipykernel = ">=6.17.0"
-ipywidgets = ">=8.0.2"
+ipython = ">=7.0"
+ipykernel = ">=5.0"
+ipywidgets = ">=7.0"
 nb-black = ">=1.0.7"
 fire = "^0.5.0"
 
