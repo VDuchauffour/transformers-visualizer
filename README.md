@@ -6,8 +6,14 @@
     <a href="https://opensource.org/licenses/Apache-2.0">
         <img alt="Apache" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg">
     </a>
+    <a href="https://github.com/VDuchauffour/transformers-visualizer/blob/main/.github/workflows/unit_tests.yml">
+        <img alg="Unit tests" src="https://github.com/VDuchauffour/transformers-visualizer/actions/workflows/unit_tests.yml/badge.svg">
+    </a>
+    <a href="">
+        <img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/transformers-visualizer?color=red">
+    </a>
     <a href="https://github.com/VDuchauffour/transformers-visualizer">
-        <img alt="PyPI" src="https://img.shields.io/pypi/v/transformers-visualizer?label=version">
+        <img alt="PyPI - Package Version" src="https://img.shields.io/pypi/v/transformers-visualizer?label=version">
     </a>
 </p>
 
@@ -70,7 +76,7 @@ plt.savefig("token_to_token.jpg")
 
 <p>
 
-You can specify the `order` used in `torch.linalg.norm` in `__call__` and `compute` methods. By default, it's a L2 norm.
+You can specify the `order` used in `torch.linalg.norm` in `__call__` and `compute` methods. By default, an L2 norm is applied.
 
 ```python
 from transformers_visualizer import TokenToTokenNormalizedAttentions
@@ -87,16 +93,35 @@ visualizer.compute(text).plot()
 
 </details>
 
+## Plotting
+
+`plot` method accept to skip special tokens with the parameter `skip_special_tokens`, by default it's set to `False`.
+
+You can use the following imports to use plotting functions directly.
+
+```python
+from transformers_visualizer.plotting import plot_token_to_token, plot_token_to_token_specific_dimension
+```
+
+These functions or the `plot` method of a visualizer can use the following parameters.
+
+- `figsize (Tuple[int, int])`: Figsize of the plot. Defaults to (20, 20).
+- `ticks_fontsize (int)`: Ticks fontsize. Defaults to 7.
+- `title_fontsize (int)`: Title fontsize. Defaults to 9.
+- `cmap (str)`: Colormap. Defaults to "viridis".
+- `colorbar (bool)`: Display colorbars. Defaults to True.
+
 ## Upcoming features
 
-- [ ] Adding an option to specify head/layer indices to plot.
-- [ ] Adding other plotting backends such as Plotly, Bokeh, Altair.
+- [x] Add an option to mask special tokens.
+- [ ] Add an option to specify head/layer indices to plot.
+- [ ] Add other plotting backends such as Plotly, Bokeh, Altair.
 - [ ] Implement other visualizers such as [vector norm](https://arxiv.org/pdf/2004.10102.pdf).
 
 ## References
 
-- [[1]][captum_part1] Captum's BERT example part 1
-- [[2]][captum_part2] Captum's BERT example part 2
+- [[1]][captum_part1] Captum's BERT tutorial (part 1)
+- [[2]][captum_part2] Captum's BERT tutorial (part 2)
 
 ## Acknowledgements
 
