@@ -26,6 +26,18 @@ class DimensionIndicesError(IndexError):
         )
 
 
+class TextInputError(NotImplementedError):
+    """
+    Error raises when multiple text input are given.
+    """
+
+    def __str__(self):
+        """
+        Print the error.
+        """
+        return "Multiple text input is not supported."
+
+
 class OutputNotComputedEror(RuntimeError):
     """
     Error raised if the visualizer hasn't a `ModelOutput` in theirs attributes.
